@@ -3,3 +3,4 @@ A smart homework tracking application for college students
 
 Josh Rokusek
 Joseph Woolf
+Jarrod Gilligan
