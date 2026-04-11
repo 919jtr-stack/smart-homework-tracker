@@ -32,5 +32,15 @@ namespace SmartAssignmentTracker
         {
             Assignments.Add(assignment);
         }
+
+        public void DeleteAssignment(int assignmentId)
+        {
+            Assignments.RemoveAll(a => a.AssignmentID == assignmentId);
+        }
+
+        public Assignment GetAssignmentById(int assignmentId)
+        {
+            return Assignments.Find(a => a.AssignmentID == assignmentId);
+        }
     }
 }

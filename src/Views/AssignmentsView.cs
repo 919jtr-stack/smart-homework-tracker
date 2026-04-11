@@ -59,6 +59,26 @@ namespace SmartAssignmentTracker
             };
             btnAddAssignment.Click += BtnAddAssignment_Click;
 
+            var btnEditAssignment = new Button
+            {
+                Text = "Edit Assignment",
+                Location = new Point(300, 340),
+                Size = new Size(140, 35),
+                Font = new Font("Segoe UI", 10),
+                FlatStyle = FlatStyle.Flat
+            };
+            btnEditAssignment.Click += BtnEditAssignment_Click;
+
+            var btnDeleteAssignment = new Button
+            {
+                Text = "Delete Assignment",
+                Location = new Point(450, 340),
+                Size = new Size(140, 35),
+                Font = new Font("Segoe UI", 10),
+                FlatStyle = FlatStyle.Flat
+            };
+            btnDeleteAssignment.Click += BtnDeleteAssignment_Click;
+
             var lblHint = new Label
             {
                 Text = "Double-click an assignment to view details",
@@ -68,12 +88,22 @@ namespace SmartAssignmentTracker
                 AutoSize = true
             };
 
-            Controls.AddRange(new Control[] { lblTitle, lstAssignments, btnMarkComplete, btnAddAssignment, lblHint });
+            Controls.AddRange(new Control[]
+            {
+                lblTitle,
+                lstAssignments,
+                btnMarkComplete,
+                btnAddAssignment,
+                btnEditAssignment,
+                btnDeleteAssignment,
+                lblHint
+            });
         }
 
         private void RefreshAssignmentList()
         {
             lstAssignments.Items.Clear();
+
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
                 .ToList();
@@ -111,6 +141,7 @@ namespace SmartAssignmentTracker
                 .ToList();
 
             int index = lstAssignments.SelectedIndex;
+
             if (index < 0 || allAssignments.Count == 0)
             {
                 MessageBox.Show("Please select an assignment.", "Mark Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -119,7 +150,115 @@ namespace SmartAssignmentTracker
 
             var selected = allAssignments[index];
             selected.Assignment.MarkComplete();
+
             MessageBox.Show($"'{selected.Assignment.Title}' marked as complete.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            RefreshAssignmentList();
+        }
+
+        private void BtnDeleteAssignment_Click(object? sender, EventArgs e)
+        {
+            var allAssignments = student.Courses
+                .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .ToList();
+
+            int index = lstAssignments.SelectedIndex;
+
+            if (index < 0 || allAssignments.Count == 0)
+            {
+                MessageBox.Show("Please select an assignment.", "Delete Assignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selected = allAssignments[index];
+
+            var confirm = MessageBox.Show(
+                $"Are you sure you want to delete '{selected.Assignment.Title}'?",
+                "Delete Assignment",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (confirm == DialogResult.Yes)
+            {
+                selected.Course.DeleteAssignment(selected.Assignment.AssignmentID);
+                MessageBox.Show("Assignment deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                RefreshAssignmentList();
+            }
+        }
+
+        private void BtnEditAssignment_Click(object? sender, EventArgs e)
+        {
+            var allAssignments = student.Courses
+                .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .ToList();
+
+            int index = lstAssignments.SelectedIndex;
+
+            if (index < 0 || allAssignments.Count == 0)
+            {
+                MessageBox.Show("Please select an assignment.", "Edit Assignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selected = allAssignments[index];
+
+            using var dialog = new Form
+            {
+                Text = "Edit Assignment",
+                Size = new Size(380, 250),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+
+            var lblTitle = new Label { Text = "Title:", Location = new Point(20, 20), AutoSize = true };
+            var txtTitle = new TextBox
+            {
+                Location = new Point(20, 45),
+                Size = new Size(320, 25),
+                Text = selected.Assignment.Title
+            };
+
+            var lblDueDate = new Label { Text = "Due Date:", Location = new Point(20, 80), AutoSize = true };
+            var dtpDueDate = new DateTimePicker
+            {
+                Location = new Point(20, 105),
+                Size = new Size(320, 25),
+                Value = selected.Assignment.DueDate,
+                Format = DateTimePickerFormat.Short
+            };
+
+            var btnSave = new Button
+            {
+                Text = "Save",
+                Location = new Point(20, 150),
+                Size = new Size(320, 35),
+                BackColor = Color.FromArgb(0, 120, 215),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+
+            btnSave.Click += (s, args) =>
+            {
+                if (string.IsNullOrWhiteSpace(txtTitle.Text))
+                {
+                    MessageBox.Show("Please enter a title.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                selected.Assignment.EditAssignment(
+                    txtTitle.Text.Trim(),
+                    dtpDueDate.Value,
+                    selected.Assignment.Status
+                );
+
+                MessageBox.Show("Assignment updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dialog.Close();
+            };
+
+            dialog.Controls.AddRange(new Control[] { lblTitle, txtTitle, lblDueDate, dtpDueDate, btnSave });
+            dialog.ShowDialog();
             RefreshAssignmentList();
         }
 
@@ -149,6 +288,7 @@ namespace SmartAssignmentTracker
                 Font = new Font("Segoe UI", 10),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
+
             foreach (var course in student.Courses)
             {
                 cmbCourse.Items.Add(course.CourseName);
@@ -157,6 +297,7 @@ namespace SmartAssignmentTracker
 
             var lblTitle = new Label { Text = "Title:", Location = new Point(20, 80), AutoSize = true, Font = new Font("Segoe UI", 10) };
             var txtTitle = new TextBox { Location = new Point(20, 105), Size = new Size(320, 25), Font = new Font("Segoe UI", 10) };
+
             var lblDueDate = new Label { Text = "Due Date:", Location = new Point(20, 140), AutoSize = true, Font = new Font("Segoe UI", 10) };
             var dtpDueDate = new DateTimePicker
             {
@@ -187,10 +328,19 @@ namespace SmartAssignmentTracker
 
                 var selectedCourse = student.Courses[cmbCourse.SelectedIndex];
                 var allAssignmentsForId = student.Courses.SelectMany(c => c.Assignments).ToList();
+
                 int assignmentId = allAssignmentsForId.Count > 0
                     ? allAssignmentsForId.Max(a => a.AssignmentID) + 1
                     : 1;
-                var assignment = new Assignment(assignmentId, selectedCourse.CourseID, txtTitle.Text.Trim(), dtpDueDate.Value, "In Progress");
+
+                var assignment = new Assignment(
+                    assignmentId,
+                    selectedCourse.CourseID,
+                    txtTitle.Text.Trim(),
+                    dtpDueDate.Value,
+                    "In Progress"
+                );
+
                 selectedCourse.AddAssignment(assignment);
                 dialog.Close();
             };

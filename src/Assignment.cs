@@ -42,5 +42,17 @@ namespace SmartAssignmentTracker
         {
             Status = "Complete";
         }
+
+        public void EditAssignment(string newTitle, DateTime newDueDate, string newStatus)
+        {
+            Title = newTitle;
+            DueDate = newDueDate;
+            Status = newStatus;
+        }
+
+        public void DeleteReminder(int reminderId)
+        {
+            Reminders.RemoveAll(r => r.ReminderID == reminderId);
+        }
     }
 }
