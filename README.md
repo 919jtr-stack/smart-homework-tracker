@@ -19,27 +19,27 @@ View Assignments
 - Each assignment will have its title, course, and status 
 
 How to Add Assignments
-1 Click Add Assignment
-2 Select the course you desire
-3 Enter the title
-4 Choose a due date
-5 Then click save
+1. Click Add Assignment
+2. Select the course you desire
+3. Enter the title
+4. Choose a due date
+5. Then click save
 
 How to Edit/Change an Assignment
-1 Select an assignment
-2 Click Edit Assignment
-3 Update the title or due date
-4 Click Save
+1. Select an assignment
+2. Click Edit Assignment
+3. Update the title or due date
+4. Click Save
 
 How to Delete an Assignment
-1 Select an assignment
-2 Click Delete Assignment 
-3 Confirm
+1. Select an assignment
+2. Click Delete Assignment 
+3. Confirm
 
 How to Mark an Assignment as Complete
-1 Select an assignment
-2 Mark as complete
-3 This will update the status as Complete
+1. Select an assignment
+2. Mark as complete
+3. This will update the status as Complete
 
 Viewing Assignment Details
 Double-click an assignment to view more details and reminders
