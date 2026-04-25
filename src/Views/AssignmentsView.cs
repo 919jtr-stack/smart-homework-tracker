@@ -106,6 +106,9 @@ namespace SmartAssignmentTracker
 
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .OrderBy(x => x.Assignment.IsOverdue() ? 0 :
+                        x.Assignment.IsDueToday() ? 1 : 2)
+                .ThenBy(x => x.Assignment.DueDate)
                 .ToList();
 
             if (allAssignments.Count == 0)
@@ -116,7 +119,18 @@ namespace SmartAssignmentTracker
             {
                 foreach (var item in allAssignments)
                 {
-                    lstAssignments.Items.Add($"{item.Assignment.Title} - {item.Course.CourseName} [{item.Assignment.Status}]");
+                    string prefix = "";
+
+                    if (item.Assignment.IsOverdue())
+                    {
+                        prefix = "[OVERDUE] ";
+                    }
+                    else if (item.Assignment.IsDueToday())
+                    {
+                        prefix = "[DUE TODAY] ";
+                    }
+                
+                    lstAssignments.Items.Add($"{prefix}{item.Assignment.Title} - {item.Course.CourseName} - Due: {item.Assignment.DueDate.ToShortDateString()} [{item.Assignment.Status}]");
                 }
             }
         }
@@ -125,6 +139,9 @@ namespace SmartAssignmentTracker
         {
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .OrderBy(x => x.Assignment.IsOverdue() ? 0 :
+                        x.Assignment.IsDueToday() ? 1 : 2)
+                .ThenBy(x => x.Assignment.DueDate)
                 .ToList();
 
             int index = lstAssignments.SelectedIndex;
@@ -138,6 +155,9 @@ namespace SmartAssignmentTracker
         {
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .OrderBy(x => x.Assignment.IsOverdue() ? 0 :
+                        x.Assignment.IsDueToday() ? 1 : 2)
+                .ThenBy(x => x.Assignment.DueDate)
                 .ToList();
 
             int index = lstAssignments.SelectedIndex;
@@ -159,6 +179,9 @@ namespace SmartAssignmentTracker
         {
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .OrderBy(x => x.Assignment.IsOverdue() ? 0 :
+                        x.Assignment.IsDueToday() ? 1 : 2)
+                .ThenBy(x => x.Assignment.DueDate)
                 .ToList();
 
             int index = lstAssignments.SelectedIndex;
@@ -190,6 +213,9 @@ namespace SmartAssignmentTracker
         {
             var allAssignments = student.Courses
                 .SelectMany(c => c.Assignments, (c, a) => new { Course = c, Assignment = a })
+                .OrderBy(x => x.Assignment.IsOverdue() ? 0 :
+                        x.Assignment.IsDueToday() ? 1 : 2)
+                .ThenBy(x => x.Assignment.DueDate)
                 .ToList();
 
             int index = lstAssignments.SelectedIndex;

@@ -43,6 +43,16 @@ namespace SmartAssignmentTracker
             Status = "Complete";
         }
 
+        public bool IsOverdue()
+        {
+            return Status != "Complete" && DueDate.Date < DateTime.Now.Date;
+        }
+
+        public bool IsDueToday()
+        {
+            return Status != "Complete" && DueDate.Date == DateTime.Now.Date;
+        }
+
         public void EditAssignment(string newTitle, DateTime newDueDate, string newStatus)
         {
             Title = newTitle;
