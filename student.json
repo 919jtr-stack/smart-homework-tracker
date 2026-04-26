@@ -1,0 +1,23 @@
+{
+  "StudentID": 0,
+  "Name": "",
+  "Email": "joseph@email.com",
+  "Courses": [
+    {
+      "CourseID": 1,
+      "StudentID": 0,
+      "CourseName": "Test Course",
+      "Instructor": "Me",
+      "Assignments": [
+        {
+          "AssignmentID": 1,
+          "CourseID": 1,
+          "Title": "Test assignment",
+          "DueDate": "2026-04-25T21:08:24.7981994-06:00",
+          "Status": "In Progress",
+          "Reminders": []
+        }
+      ]
+    }
+  ]
+}

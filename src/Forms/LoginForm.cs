@@ -92,9 +92,10 @@ namespace SmartAssignmentTracker
                 return;
             }
 
-            Student student = new Student(1, "Ron Swanson", txtEmail.Text);
+            Student student = StudentStorage.Load();
+            student.Email = txtEmail.Text;
             var mainForm = new MainForm(student);
-            mainForm.FormClosed += (s, args) => Close();
+            mainForm.FormClosed += (s, args) => StudentStorage.Save(student);
             mainForm.Show();
             Hide();
         }
